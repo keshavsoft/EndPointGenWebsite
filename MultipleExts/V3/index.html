@@ -13,107 +13,116 @@
     <title>KeshavSoft Express API Journey</title>
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        .extension-link {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: bold;
         }
 
-        body{
-            background:#0f172a;
-            color:white;
-            font-family:Arial, Helvetica, sans-serif;
-            min-height:100vh;
+        .extension-link:hover {
+            color: #7dd3fc;
+            text-decoration: underline;
         }
 
-        .container{
-            width:90%;
-            max-width:1100px;
-            margin:auto;
-            padding:50px 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h1{
-            text-align:center;
-            font-size:42px;
-            color:#38bdf8;
-            margin-bottom:20px;
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
         }
 
-        .subtitle{
-            text-align:center;
-            color:#cbd5e1;
-            margin-bottom:50px;
-            font-size:18px;
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 20px;
         }
 
-        .step{
-            background:#1e293b;
-            padding:30px;
-            border-radius:16px;
-            margin-bottom:35px;
-            border-left:6px solid #38bdf8;
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            color: #38bdf8;
+            margin-bottom: 20px;
         }
 
-        .step h2{
-            color:#facc15;
-            margin-bottom:20px;
+        .subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 50px;
+            font-size: 18px;
         }
 
-        .step p{
-            margin-bottom:18px;
-            line-height:1.7;
-            color:#cbd5e1;
+        .step {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            border-left: 6px solid #38bdf8;
         }
 
-        .btn{
-            display:inline-block;
-            padding:14px 28px;
-            background:#38bdf8;
-            color:black;
-            text-decoration:none;
-            border-radius:10px;
-            font-weight:bold;
-            transition:0.3s;
+        .step h2 {
+            color: #facc15;
+            margin-bottom: 20px;
         }
 
-        .btn:hover{
-            background:#0ea5e9;
-            transform:scale(1.05);
+        .step p {
+            margin-bottom: 18px;
+            line-height: 1.7;
+            color: #cbd5e1;
         }
 
-        pre{
-            background:#020617;
-            color:#4ade80;
-            padding:15px;
-            border-radius:10px;
-            overflow-x:auto;
-            margin-top:10px;
-            margin-bottom:20px;
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: #38bdf8;
+            color: black;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
         }
 
-        ul{
-            padding-left:20px;
+        .btn:hover {
+            background: #0ea5e9;
+            transform: scale(1.05);
         }
 
-        ul li{
-            margin-bottom:14px;
-            line-height:1.7;
+        pre {
+            background: #020617;
+            color: #4ade80;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-top: 10px;
+            margin-bottom: 20px;
         }
 
-        code{
-            background:#020617;
-            color:#4ade80;
-            padding:3px 6px;
-            border-radius:6px;
+        ul {
+            padding-left: 20px;
         }
 
-        .final{
-            background:#14532d;
-            border-left:6px solid #22c55e;
+        ul li {
+            margin-bottom: 14px;
+            line-height: 1.7;
         }
 
+        code {
+            background: #020617;
+            color: #4ade80;
+            padding: 3px 6px;
+            border-radius: 6px;
+        }
+
+        .final {
+            background: #14532d;
+            border-left: 6px solid #22c55e;
+        }
     </style>
 
 </head>
@@ -136,7 +145,7 @@
 
             <p>Create an empty folder:</p>
 
-<pre>
+            <pre>
 test
 </pre>
 
@@ -157,9 +166,12 @@ test
             </p>
 
             <ul>
-
                 <li>
-                    ks-express-boilerplate
+                    <a class="btn"
+                        href="https://marketplace.visualstudio.com/items?itemName=KeshavSoft.vs-code-ext-boilerplate"
+                        target="_blank" rel="noopener noreferrer">
+                        Install ks-express-boilerplate ↗
+                    </a>
                 </li>
 
                 <li>
@@ -201,7 +213,7 @@ test
                 Select:
             </p>
 
-<pre>
+            <pre>
 Express BoilerPlate with simple
 </pre>
 
@@ -209,7 +221,7 @@ Express BoilerPlate with simple
                 This generates:
             </p>
 
-<pre>
+            <pre>
 app.js
 routes.js
 server.js
@@ -230,7 +242,7 @@ package.json
                 Open:
             </p>
 
-<pre>
+            <pre>
 app.js
 </pre>
 
@@ -254,7 +266,7 @@ app.js
                 Open:
             </p>
 
-<pre>
+            <pre>
 Api/routes.js
 </pre>
 
@@ -278,7 +290,7 @@ Api/routes.js
                 Open:
             </p>
 
-<pre>
+            <pre>
 Api/V1/routes.js
 </pre>
 
@@ -302,7 +314,7 @@ Api/V1/routes.js
                 Open:
             </p>
 
-<pre>
+            <pre>
 Api/V1/journals/end-points.js
 </pre>
 
@@ -310,7 +322,7 @@ Api/V1/journals/end-points.js
                 Use:
             </p>
 
-<pre>
+            <pre>
 get
 insert
 delete
@@ -321,7 +333,7 @@ alter
                 This generates API action folders like:
             </p>
 
-<pre>
+            <pre>
 ShowAll/
 Insert/
 Delete/
@@ -332,7 +344,7 @@ Alter/
                 Along with:
             </p>
 
-<pre>
+            <pre>
 controller.js
 service.js
 errors.js
@@ -356,7 +368,7 @@ rest.http
 
             <h2>FINAL GENERATED STRUCTURE</h2>
 
-<pre>
+            <pre>
 Api
  └── V1
       └── journals
