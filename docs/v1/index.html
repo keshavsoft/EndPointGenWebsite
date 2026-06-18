@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeshavSoft Express API Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline script to prevent flash of wrong theme on load
+        if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            document.documentElement.classList.add('light-mode');
+        } else {
+            document.documentElement.classList.remove('light-mode');
+        }
+    </script>
+    <style>
+        .theme-transition, .theme-transition * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Light Mode Overrides */
+        html.light-mode body {
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        html.light-mode header {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: #cbd5e1;
+        }
+        html.light-mode h1, html.light-mode h2, html.light-mode h3, html.light-mode h4 {
+            color: #0f172a; /* slate-900 */
+        }
+        html.light-mode p, html.light-mode li {
+            color: #334155; /* slate-700 */
+        }
+        html.light-mode hr { border-color: #cbd5e1; }
+        html.light-mode .step-timeline { border-color: #cbd5e1; }
+        html.light-mode .step-node { background-color: #ffffff; border-color: #94a3b8; color: #475569; }
+        html.light-mode .step-node-active { border-color: #0891b2; color: #0891b2; background-color: #ecfeff; }
+        html.light-mode .card-bg { background-color: #ffffff; border-color: #cbd5e1; }
+        html.light-mode .card-text { color: #334155; }
+        html.light-mode .terminal-bg { background-color: #f1f5f9; border-color: #cbd5e1; color: #0f172a; }
+        html.light-mode .blockquote-bg { background-color: #f1f5f9; color: #0f172a; }
+        
+        /* Light Mode Fixes specifically for FAQs */
+        html.light-mode .faq-card { background-color: #ffffff; border-color: #cbd5e1; }
+        html.light-mode .faq-answer { color: #475569; }
+
+        /* VS Code Mockup - Light Mode Conversions */
+        html.light-mode .vsc-window { background-color: #ffffff; border-color: #cbd5e1; color: #232529; }
+        html.light-mode .vsc-bar { background-color: #f3f3f3; border-color: #cbd5e1; color: #616161; }
+        html.light-mode .vsc-prompt { background-color: #eaeaea; border-color: #cbd5e1; }
+        html.light-mode .vsc-prompt-box { background-color: #ffffff; border-color: #94a3b8; color: #232529; }
+        html.light-mode .vsc-sidebar { background-color: #f3f3f3; border-color: #cbd5e1; color: #505050; }
+        html.light-mode .vsc-editor { background-color: #fafafa; color: #232529; }
+        html.light-mode .vsc-keyword { color: #a626a4; }
+        html.light-mode .vsc-string { color: #50a14f; }
+        html.light-mode .vsc-comment { color: #707177; }
+        html.light-mode .vsc-dropdown-item-active { background-color: #cbd5e1; color: #0f172a; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-900 theme-transition">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2 rounded-lg text-white font-bold text-xl shadow-lg shadow-cyan-500/20">
+                    KS
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">KeshavSoft</h1>
+                    <p class="text-xs text-cyan-400 font-mono">Express API Journey</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="flex gap-4 text-sm font-medium">
+                    <a href="#extensions" class="text-slate-400 hover:text-cyan-400 transition-colors">Extensions</a>
+                    <a href="#steps" class="text-slate-400 hover:text-cyan-400 transition-colors">Steps</a>
+                    <a href="#structure" class="text-slate-400 hover:text-cyan-400 transition-colors">Structure</a>
+                    <a href="#faqs" class="text-slate-400 hover:text-cyan-400 transition-colors">FAQs</a>
+                </nav>
+                
+                <button id="theme-toggle" class="p-2 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-900 text-slate-300 transition-all card-bg focus:outline-none" aria-label="Toggle theme">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 2.293a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm4.243 4.243a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM16 10a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1zM3 10a1 1 0 011-1h1a1 1 0 110 2H4a1 1 0 01-1-1zm2.293 4.293a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm4.243 4.243a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM4.293 4.293a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM10 5a5 5 0 100 10 5 5 0 000-10z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 116.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+        
+        <section class="text-center space-y-4">
+            <span class="px-3 py-1 text-xs font-semibold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 rounded-full uppercase tracking-wider">
+                Automation Tooling
+            </span>
+            <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+                From Empty Folder <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">→ API Actions</span>
+            </h2>
+            <p class="text-slate-400 max-w-xl mx-auto text-base sm:text-lg">
+                Accelerate your backend development. Generate scalable Express.js API architectures seamlessly using KeshavSoft VS Code Extensions.
+            </p>
+        </section>
+
+        <hr class="border-slate-800" />
+
+        <section id="steps" class="space-y-8">
+            <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                <span class="text-cyan-400">#</span> Walkthrough Steps
+            </h3>
+            
+            <div class="step-timeline relative border-l-2 border-slate-800 ml-4 space-y-12 pl-6 sm:pl-8">
+                
+                <div class="relative">
+                    <div class="step-node step-node-active absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-cyan-500 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-cyan-400">1</div>
+                    <h4 class="text-lg font-bold text-white">Create Empty Folder</h4>
+                    <p class="text-slate-400 mt-1">Initialize your work environment by making a clean root directory.</p>
+                    <div class="terminal-bg mt-3 bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-sm text-slate-300 max-w-xs">
+                        mkdir test && cd test
+                    </div>
+                </div>
+
+                <div id="extensions" class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">2</div>
+                    <h4 class="text-lg font-bold text-white">Install Required Extensions</h4>
+                    <p class="text-slate-400 mt-1">Equip your editor with the full suite of required KeshavSoft context generation toolkits.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                        <a href="https://keshavsoft.github.io/EndPointGenWebsite/index.html" class="card-bg p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-800 flex justify-between items-center text-sm transition-all group">
+                            <span class="card-text text-slate-300 group-hover:text-cyan-400 font-mono">ks-express-boilerplate</span>
+                            <span class="text-xs text-slate-500">↗</span>
+                        </a>
+                        <a href="https://keshavsoft.github.io/EndPointGenWebsite/index.html" class="card-bg p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-800 flex justify-between items-center text-sm transition-all group">
+                            <span class="card-text text-slate-300 group-hover:text-cyan-400 font-mono">express api generator</span>
+                            <span class="text-xs text-slate-500">↗</span>
+                        </a>
+                        <a href="https://keshavsoft.github.io/EndPointGenWebsite/index.html" class="card-bg p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-800 flex justify-between items-center text-sm transition-all group">
+                            <span class="card-text text-slate-300 group-hover:text-cyan-400 font-mono">express api sub routes generate</span>
+                            <span class="text-xs text-slate-500">↗</span>
+                        </a>
+                        <a href="https://keshavsoft.github.io/EndPointGenWebsite/index.html" class="card-bg p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-800 flex justify-between items-center text-sm transition-all group">
+                            <span class="card-text text-slate-300 group-hover:text-cyan-400 font-mono">express api endpoints generate</span>
+                            <span class="text-xs text-slate-500">↗</span>
+                        </a>
+                        <a href="https://keshavsoft.github.io/EndPointGenWebsite/index.html" class="card-bg p-3 bg-slate-800/40 hover:bg-slate-800 rounded-lg border border-slate-800 flex justify-between items-center text-sm transition-all group">
+                            <span class="card-text text-slate-300 group-hover:text-cyan-400 font-mono">express api actions generate</span>
+                            <span class="text-xs text-slate-500">↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">3</div>
+                    <h4 class="text-lg font-bold text-white">Generate Express Boilerplate</h4>
+                    <p class="text-slate-400 mt-1">Right-click on an empty space inside the VS Code Explorer area and select <code class="card-text text-slate-200 bg-slate-800 px-1 rounded font-mono">Express BoilerPlate with simple</code>.</p>
+                </div>
+
+                <div class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">4</div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Generate API Folder</h4>
+                            <p class="text-slate-400 text-sm">Open <code class="text-cyan-400 font-mono bg-slate-950 px-1 py-0.5 rounded text-xs">app.js</code>, click the <strong>StartEndpoint</strong> button on the top-right toolbar, and input <code class="card-text text-slate-200 bg-slate-800 px-1 rounded">Api</code>.</p>
+                        </div>
+                        
+                        <div class="vsc-window bg-[#1e1e1e] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                            <div class="vsc-bar bg-[#181818] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                    <span class="ml-2 text-slate-500 text-[11px]">app.js — TEST</span>
+                                </div>
+                                <div class="text-amber-500 text-[11px] bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 font-sans font-semibold">
+                                    ⚙ StartEndpoint
+                                </div>
+                            </div>
+                            <div class="vsc-prompt bg-[#252526] p-2 border-b border-[#3c3c3c] flex justify-center">
+                                <div class="vsc-prompt-box bg-[#3c3c3c] w-full max-w-md px-3 py-1 rounded text-slate-300 border border-cyan-500/60 flex justify-between items-center">
+                                    <span>Api</span>
+                                    <span class="text-[10px] text-slate-500">Enter router root directory</span>
+                                </div>
+                            </div>
+                            <div class="flex divide-x divide-slate-900/60 h-20">
+                                <div class="vsc-sidebar w-1/4 bg-[#252526] p-3 text-[11px] hidden sm:block select-none text-slate-500">
+                                    <div class="text-cyan-400 font-bold">✓ app.js</div>
+                                </div>
+                                <div class="vsc-editor w-full sm:w-3/4 p-4 bg-[#1e1e1e] text-slate-300">
+                                    <span class="vsc-keyword text-purple-400">import</span> express <span class="vsc-keyword text-purple-400">from</span> <span class="vsc-string text-emerald-400">"express"</span>;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">5</div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Generate V1 Sub Route</h4>
+                            <p class="text-slate-400 text-sm">Open <code class="text-cyan-400 font-mono bg-slate-950 px-1 py-0.5 rounded text-xs">Api/routes.js</code>, use the <strong>AddSubRoute</strong> extension trigger, and assign the path version <code class="card-text text-slate-200 bg-slate-800 px-1 rounded">V1</code>.</p>
+                        </div>
+
+                        <div class="vsc-window bg-[#1e1e1e] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                            <div class="vsc-bar bg-[#181818] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                    <span class="ml-2 text-slate-500 text-[11px]">Api/routes.js</span>
+                                </div>
+                                <div class="text-cyan-400 text-[11px] bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 font-sans font-semibold">
+                                    ⚙ AddSubRoute
+                                </div>
+                            </div>
+                            <div class="vsc-prompt bg-[#252526] p-2 border-b border-[#3c3c3c] flex justify-center">
+                                <div class="vsc-prompt-box bg-[#3c3c3c] w-full max-w-md px-3 py-1 rounded text-slate-300 border border-cyan-500/60 flex justify-between items-center">
+                                    <span>V1</span>
+                                    <span class="text-[10px] text-slate-500">Enter sub route parameter</span>
+                                </div>
+                            </div>
+                            <div class="flex divide-x divide-slate-900/60 h-20">
+                                <div class="vsc-sidebar w-1/4 bg-[#252526] p-3 text-[11px] hidden sm:block text-slate-500">
+                                    <div>Api/</div>
+                                    <div class="text-cyan-400 font-bold">  └── routes.js</div>
+                                </div>
+                                <div class="vsc-editor w-full sm:w-3/4 p-4 bg-[#1e1e1e] text-slate-300">
+                                    <span class="vsc-keyword text-purple-400">import</span> { router <span class="vsc-keyword text-purple-400">as</span> v1Router } <span class="vsc-keyword text-purple-400">from</span> <span class="vsc-string text-emerald-400">"./V1/routes.js"</span>;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">6</div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Generate Table Route</h4>
+                            <p class="text-slate-400 text-sm">Open <code class="text-cyan-400 font-mono bg-slate-950 px-1 py-0.5 rounded text-xs">Api/V1/routes.js</code>, trigger <strong>AddTableName</strong> and issue your collection route name <code class="card-text text-slate-200 bg-slate-800 px-1 rounded">journals</code>.</p>
+                        </div>
+
+                        <div class="vsc-window bg-[#1e1e1e] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                            <div class="vsc-bar bg-[#181818] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                <div class="flex items-center gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                    <span class="ml-2 text-slate-500 text-[11px]">Api/V1/routes.js</span>
+                                </div>
+                                <div class="text-indigo-400 text-[11px] bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 font-sans font-semibold">
+                                    ⚙ AddTableName
+                                </div>
+                            </div>
+                            <div class="vsc-prompt bg-[#252526] p-2 border-b border-[#3c3c3c] flex justify-center">
+                                <div class="vsc-prompt-box bg-[#3c3c3c] w-full max-w-md px-3 py-1 rounded text-slate-300 border border-cyan-500/60 flex justify-between items-center">
+                                    <span>journals</span>
+                                    <span class="text-[10px] text-slate-500">Enter collection / table name</span>
+                                </div>
+                            </div>
+                            <div class="flex divide-x divide-slate-900/60 h-20">
+                                <div class="vsc-sidebar w-1/4 bg-[#252526] p-3 text-[11px] hidden sm:block text-slate-500">
+                                    <div>Api/V1/</div>
+                                    <div class="text-cyan-400 font-bold">  └── routes.js</div>
+                                </div>
+                                <div class="vsc-editor w-full sm:w-3/4 p-4 bg-[#1e1e1e] text-slate-300">
+                                    <span class="vsc-keyword text-purple-400">import</span> journalsRouter <span class="vsc-keyword text-purple-400">from</span> <span class="vsc-string text-emerald-400">"./journals/routes.js"</span>;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="step-node absolute -left-[35px] sm:-left-[43px] top-0 bg-slate-900 border-2 border-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-slate-400">7</div>
+                    <div class="space-y-8">
+                        <div>
+                            <h4 class="text-lg font-bold text-white">STEP 7 — Generate API Actions</h4>
+                            <p class="text-slate-400 text-sm mt-1">First, open <code class="text-cyan-400 font-mono bg-slate-950 px-1 py-0.5 rounded text-xs">Api/V1/journals/end-points.js</code>. We will use the custom action configuration layers to generate specific CRUD routes.</p>
+                        </div>
+
+                        <div class="space-y-3 border-l-2 border-cyan-500/30 pl-4">
+                            <p class="text-sm text-slate-300">1. Click <strong class="text-cyan-400 font-mono">get</strong> on the top menu option panel and select:</p>
+                            <blockquote class="blockquote-bg border-l-4 border-cyan-500 bg-slate-950 p-2 rounded-r font-mono text-xs text-slate-200 max-w-xl">
+                                ShowAll : get all data from table
+                            </blockquote>
+
+                            <div class="vsc-window bg-[#1b1c23] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                                <div class="vsc-bar bg-[#14151b] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                        <span class="ml-2 text-slate-500 text-[11px]">Api/V1/journals/end-points.js</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-slate-400 font-sans text-[11px]">
+                                        <span class="text-cyan-400 font-bold underline decoration-2 underline-offset-4 cursor-pointer">get</span>
+                                        <span class="hover:text-white cursor-pointer">insert</span>
+                                        <span class="hover:text-white cursor-pointer">delete</span>
+                                        <span class="hover:text-white cursor-pointer">alter</span>
+                                    </div>
+                                </div>
+                                <div class="vsc-prompt bg-[#252526] p-3 border-b border-[#3c3c3c] flex flex-col items-center">
+                                    <div class="bg-[#2d2d2d] w-full max-w-xl px-3 py-1.5 rounded-t text-slate-300 border-x border-t border-cyan-500/40 text-[11px]">
+                                        Select get methods
+                                    </div>
+                                    <div class="bg-[#252526] w-full max-w-xl border border-cyan-500/40 shadow-xl text-[11px] flex flex-col text-slate-300">
+                                        <div class="vsc-dropdown-item-active bg-[#094771] text-white px-3 py-1.5 flex justify-between font-semibold">
+                                            <span>ShowAll : get all data from table</span>
+                                            <span class="text-[10px] text-cyan-300">Selected</span>
+                                        </div>
+                                        <div class="px-3 py-1.5 text-slate-500 border-t border-slate-800/40">Find : get single record from table</div>
+                                        <div class="px-3 py-1.5 text-slate-500 border-t border-slate-800/40">Filter : get all matched records from table</div>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-[#1e1e1e] text-[11px] text-slate-400 border-t border-slate-900/40">
+                                    <span class="text-emerald-400 font-semibold">⚡ This generates the ShowAll/ directory containing:</span>
+                                    <div class="flex gap-2 mt-1 text-slate-400 font-mono text-[10px]">
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">controller.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">errors.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">service.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">rest.http</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 border-l-2 border-emerald-500/30 pl-4">
+                            <p class="text-sm text-slate-300">2. Now, click <strong class="text-emerald-400 font-mono">insert</strong> on the menu option bar and select:</p>
+                            <blockquote class="blockquote-bg border-l-4 border-emerald-500 bg-slate-950 p-2 rounded-r font-mono text-xs text-slate-200 max-w-xl">
+                                Insert : AsIs
+                            </blockquote>
+
+                            <div class="vsc-window bg-[#1b1c23] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                                <div class="vsc-bar bg-[#14151b] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                        <span class="ml-2 text-slate-500 text-[11px]">Api/V1/journals/end-points.js</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-slate-400 font-sans text-[11px]">
+                                        <span class="hover:text-white cursor-pointer">get</span>
+                                        <span class="text-emerald-400 font-bold underline decoration-2 underline-offset-4 cursor-pointer">insert</span>
+                                        <span class="hover:text-white cursor-pointer">delete</span>
+                                        <span class="hover:text-white cursor-pointer">alter</span>
+                                    </div>
+                                </div>
+                                <div class="vsc-prompt bg-[#252526] p-3 border-b border-[#3c3c3c] flex flex-col items-center">
+                                    <div class="bg-[#2d2d2d] w-full max-w-xl px-3 py-1.5 rounded-t text-slate-300 border-x border-t border-emerald-500/40 text-[11px]">
+                                        Select insert methods
+                                    </div>
+                                    <div class="bg-[#252526] w-full max-w-xl border border-emerald-500/40 shadow-xl text-[11px] flex flex-col text-slate-300">
+                                        <div class="vsc-dropdown-item-active bg-[#094771] text-white px-3 py-1.5 flex justify-between font-semibold">
+                                            <span>Insert : AsIs</span>
+                                            <span class="text-[10px] text-emerald-300">Selected</span>
+                                        </div>
+                                        <div class="px-3 py-1.5 text-slate-500 border-t border-slate-800/40">Bulk : Insert array data into table</div>
+                                    </div>
+                                </div>
+                                <div class="p-3 bg-[#1e1e1e] text-[11px] text-slate-400 border-t border-slate-900/40">
+                                    <span class="text-emerald-400 font-semibold">⚡ This generates the Insert/ directory containing:</span>
+                                    <div class="flex gap-2 mt-1 text-slate-400 font-mono text-[10px]">
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">controller.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">errors.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">middleware.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">service.js</span>
+                                        <span class="bg-slate-950 px-1 py-0.5 rounded">rest.http</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 border-l-2 border-rose-500/30 pl-4">
+                            <p class="text-sm text-slate-300">3. Now click <strong class="text-rose-400 font-mono">delete</strong> on your action menu toolbar layout:</p>
+                            <blockquote class="blockquote-bg border-l-4 border-rose-500 bg-slate-950 p-2 rounded-r font-mono text-xs text-slate-200 max-w-xl">
+                                Select required delete type.
+                            </blockquote>
+
+                            <div class="vsc-window bg-[#1b1c23] rounded-xl border border-slate-800 overflow-hidden shadow-2xl font-mono text-xs text-slate-400">
+                                <div class="vsc-bar bg-[#14151b] px-4 py-2 flex items-center justify-between border-b border-slate-900">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                                        <span class="ml-2 text-slate-500 text-[11px]">Api/V1/journals/end-points.js</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 text-slate-400 font-sans text-[11px]">
+                                        <span class="hover:text-white cursor-pointer">get</span>
+                                        <span class="hover:text-white cursor-pointer">insert</span>
+                                        <span class="text-rose-400 font-bold underline decoration-2 underline-offset-4 cursor-pointer">delete</span>
+                                        <span class="hover:text-white cursor-pointer">alter</span>
+                                    </div>
+                                </div>
+                                <div class="vsc-prompt bg-[#252526] p-3 border-b border-[#3c3c3c] flex flex-col items-center">
+                                    <div class="bg-[#2d2d2d] w-full max-w-xl px-3 py-1.5 rounded-t text-slate-300 border-x border-t border-rose-500/40 text-[11px]">
+                                        Select delete methods
+                                    </div>
+                                    <div class="bg-[#252526] w-full max-w-xl border border-rose-500/40 shadow-xl text-[11px] flex flex-col text-slate-300">
+                                        <div class="vsc-dropdown-item-active bg-[#094771] text-white px-3 py-1.5 flex justify-between font-semibold">
+                                            <span>pk in params</span>
+                                            <span class="text-[10px] text-rose-300">Selected</span>
+                                        </div>
+                                        <div class="px-3 py-1.5 text-slate-400 border-t border-slate-800/40">condition as query string</div>
+                                    </div>
+                                </div>
+                                <div class="flex divide-x divide-slate-900/60 h-28">
+                                    <div class="vsc-sidebar w-1/3 bg-[#14151b] p-3 text-[11px] text-slate-500 hidden sm:block select-none">
+                                        <div class="text-slate-600">📂 journals/</div>
+                                        <div class="text-slate-500">  ├── 📂 ShowAll</div>
+                                        <div class="text-slate-500">  ├── 📂 Insert</div>
+                                        <div class="text-cyan-400">  └── end-points.js</div>
+                                    </div>
+                                    <div class="vsc-editor w-full sm:w-2/3 p-4 bg-[#1e1e1e] text-slate-300 space-y-1 text-[11px]">
+                                        <div><span class="text-amber-500">router.get</span>(<span class="text-emerald-400">'/ShowAll'</span>, <span class="text-slate-400">...</span>);</div>
+                                        <div><span class="text-amber-500">router.post</span>(<span class="text-emerald-400">'/Insert'</span>, <span class="text-slate-400">...</span>);</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="border-slate-800" />
+
+        <section id="structure" class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div class="card-bg bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h4 class="text-md font-bold uppercase tracking-wider text-slate-400 text-xs">Final Generated Architecture</h4>
+                <pre class="text-xs text-cyan-400 font-mono overflow-x-auto p-2 bg-slate-900/50 rounded-lg border border-slate-800/60 leading-relaxed">
+Api
+ └── V1
+      └── journals
+           ├── Config
+           ├── ShowAll
+           │    ├── controller.js
+           │    ├── errors.js
+           │    ├── service.js
+           │    └── rest.http
+           ├── Insert
+           │    ├── controller.js
+           │    ├── errors.js
+           │    ├── middleware.js
+           │    ├── service.js
+           │    └── rest.http
+           ├── end-points.js
+           └── routes.js
+                </pre>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-md font-bold uppercase tracking-wider text-slate-400 text-xs">What We Handled Automatically</h4>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex items-start gap-2">
+                        <span class="text-emerald-500 font-bold">✓</span>
+                        <span>Pre-linked structured controllers and services.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-emerald-500 font-bold">✓</span>
+                        <span>Zero manual Express.js routing or directory boilerplate overhead.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <hr class="border-slate-800" />
+
+        <section id="faqs" class="space-y-6">
+            <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                <span class="text-cyan-400">#</span> Frequently Asked Questions
+            </h3>
+            <div class="space-y-4">
+                <div class="faq-card bg-slate-950/40 p-5 rounded-xl border border-slate-800 space-y-2 card-bg">
+                    <h4 class="text-md font-semibold text-white">How do I access the top toolbar dropdown selections like "get" and "delete"?</h4>
+                    <p class="faq-answer text-sm text-slate-400 leading-relaxed">Ensure you have the <code class="text-cyan-400 bg-slate-900/60 px-1 rounded font-mono text-xs">express api actions generate</code> extension installed. When opening an authorized endpoint configurations file (e.g., <code class="text-slate-300 font-mono text-xs">end-points.js</code>), the action triggers automatically hook directly into your active window's configuration canvas menu panel.</p>
+                </div>
+                <div class="faq-card bg-slate-950/40 p-5 rounded-xl border border-slate-800 space-y-2 card-bg">
+                    <h4 class="text-md font-semibold text-white">What databases does the generated service structure support?</h4>
+                    <p class="faq-answer text-sm text-slate-400 leading-relaxed">The modular layout decouples routers and controllers cleanly. The generated services populate baseline structural signatures that map flexibly into any primary relational database or document data store configuration layer.</p>
+                </div>
+                <div class="faq-card bg-slate-950/40 p-5 rounded-xl border border-slate-800 space-y-2 card-bg">
+                    <h4 class="text-md font-semibold text-white">Can I introduce custom action hooks alongside boilerplate methods?</h4>
+                    <p class="faq-answer text-sm text-slate-400 leading-relaxed">Yes! Simply create a corresponding sibling subdirectory matching your action layout inside your target collection workspace, complete with your standard standalone module handling logic signatures.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="card-bg border-t border-slate-800 bg-slate-950 text-center py-6 text-xs text-slate-500">
+        &copy; 2026 KeshavSoft Automation. Scalable structure delivered cleanly.
+    </footer>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Function to match state presentation across selectors
+        function updateIcons() {
+            if (document.documentElement.classList.contains('light-mode')) {
+                themeToggleDarkIcon.classList.add('hidden');
+                themeToggleLightIcon.classList.remove('hidden');
+            } else {
+                themeToggleLightIcon.classList.add('hidden');
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+        }
+        
+        updateIcons();
+
+        themeToggleBtn.addEventListener('click', function() {
+            if (document.documentElement.classList.contains('light-mode')) {
+                document.documentElement.classList.remove('light-mode');
+                localStorage.theme = 'dark';
+            } else {
+                document.documentElement.classList.add('light-mode');
+                localStorage.theme = 'light';
+            }
+            updateIcons();
+        });
+    </script>
+</body>
+</html>
