@@ -11,4 +11,5 @@ This repository hosts the journey guide and generation templates for the KeshavS
 ## Guides & Documentation
 
 To learn how to use the extensions and run the projects, view the documentation site:
-*   [Documentation Index](file:///d:/KeshavSoftRepos/2026-07-16%282%29/EndPointGenWebsite/docs/index.html)
+*   [Live Documentation](https://keshavsoft.github.io/EndPointGenWebsite/)
+*   [Local Documentation Index](docs/index.html)
